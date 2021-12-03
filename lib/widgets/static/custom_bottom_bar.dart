@@ -191,7 +191,7 @@ class CustomBottomBar extends StatelessWidget {
                           SizedBox(
                             height: 10,
                           ),
-                          Outfuck(imglink: "imgs/Sign_out_circle.png", label: "Выйти из приложения")
+                          OutApplication(imglink: "imgs/Sign_out_circle.png", label: "Выйти из приложения")
                           ///ADD EXIT BUTTON
                         ],
                       ),
@@ -322,8 +322,8 @@ void sos(BuildContext context) {
 }
 
 
-class Outfuck extends StatelessWidget{
-  const Outfuck({
+class OutApplication extends StatelessWidget{
+  const OutApplication({
     Key? key,
     required this.imglink,
     required this.label,
