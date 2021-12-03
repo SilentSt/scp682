@@ -4,7 +4,7 @@ import 'package:scp682/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:scp682/bottom_sheets/profile_bottom_sheet.dart';
 import 'package:scp682/data/user.dart';
-
+import 'package:scp682/pages/on_boarding_page.dart';
 import 'package:scp682/widgets/flex/custom_text.dart';
 import 'package:scp682/widgets/flex/push_button.dart';
 import 'package:scp682/widgets/widgets.dart';
@@ -335,7 +335,7 @@ class OutApplication extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return TextButton(
-        onPressed: (){},
+        onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (_)=> const OnBoardingPage()));},
         style: ButtonStyle(
           overlayColor: MaterialStateColor.resolveWith((states) => Colors.transparent)
         ),
