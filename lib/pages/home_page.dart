@@ -238,6 +238,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       state = States.Static;
       startStatic(newLocation);
     }
+    timer!.cancel();
+    timer = createTimer(duration!, newLocation);
   }
 
 
@@ -248,8 +250,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       seconds = 0;
       duration = Duration(seconds: seconds, minutes:  minutes);
       accuracy = LocationAccuracy.powerSave;
-      timer!.cancel();
-      timer = createTimer(duration!, location);
     });
   }
 
