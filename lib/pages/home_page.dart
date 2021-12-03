@@ -14,6 +14,7 @@ import 'package:scp682/models/models.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 import 'package:background_location/background_location.dart' as bg;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
 class HomePage extends StatefulWidget {
@@ -36,7 +37,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Location? location;
   List<FamilyUser>? famUserList;
   List<Marker>? markers_for_drawing;
-  var curLocation = LatLng(0, 0);
+  var curLocation = LatLng(47.2313, 39.7233);
   Marker myMarker = Marker(
       point: LatLng(47.2313, 39.7233),
       builder: (context) => const Text("Карина"),
@@ -191,6 +192,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
 
     var res = await getFamily(phoneController.text);
+    SharedPreferences sh = await SharedPreferences.getInstance();
+    User.familyID = sh.getString('familyID');
     List<dynamic> resList = jsonDecode(res.body);
     for (var res in resList) {
       Map<String, dynamic> tempRes = res!;

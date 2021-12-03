@@ -13,6 +13,7 @@ import 'package:scp682/requests/send_map_data.dart';
 import 'package:scp682/widgets/flex/custom_text.dart';
 import 'package:scp682/widgets/flex/push_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class CreateFamilyPage extends StatefulWidget {
   const CreateFamilyPage({Key? key}) : super(key: key);
@@ -24,6 +25,16 @@ class CreateFamilyPage extends StatefulWidget {
 class _CreateFamilyPageState extends State<CreateFamilyPage> {
   final qrKey = const Key("QR");
   QRViewController? qrController;
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      qrController!.pauseCamera();
+    } else if (Platform.isIOS) {
+      qrController!.resumeCamera();
+    }
+  }
 
   @override
   void dispose() {

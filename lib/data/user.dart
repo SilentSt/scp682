@@ -8,4 +8,5 @@ class User{
   static List<int>? strImg;
   static LatLng userGeo = LatLng(0,0);
   static bool? admin;
+  static String? familyID;
 }

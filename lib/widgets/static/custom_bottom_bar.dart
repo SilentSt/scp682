@@ -1,7 +1,9 @@
 
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:scp682/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:scp682/bottom_sheets/profile_bottom_sheet.dart';
+import 'package:scp682/data/user.dart';
 
 import 'package:scp682/widgets/flex/custom_text.dart';
 import 'package:scp682/widgets/flex/push_button.dart';
@@ -23,10 +25,21 @@ class CustomBottomBar extends StatelessWidget {
         switch (index) {
           case 0:
             showModalBottomSheet(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20))),
                 builder: (BuildContext context) {
-                  return Container();
+                  return Container(
+                    height: MediaQuery.of(context).size.height - 80,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 60),
+                    child: QrImage(
+                      data: User.familyID??"ed0d7917-f457-41b1-b667-4288833f1af8",
+                      version: QrVersions.auto,
+                      size: 200.0,
+                    ),
+                  );
                 },
                 context: context,
                 isScrollControlled: true);
@@ -331,10 +344,7 @@ class Outfuck extends StatelessWidget{
           children: [
             Image.asset(imglink),
             CustomText(text: label, fontSize: 15,color: Colors.red,),
-            const Icon(
-              Icons.accessible_forward,
-              color: Colors.red,
-            )
+            const SizedBox(width: 10,)
           ],
         ));
   }
