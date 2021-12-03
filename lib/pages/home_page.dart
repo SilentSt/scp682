@@ -36,14 +36,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Location? location;
   List<FamilyUser>? famUserList;
-  List<Marker>? markersForDrawing;
-  int minutes = 0;
-  int seconds = 5;
-  States state = States.Movement;
-  Duration? duration;
-  Timer? timer;
-  List<LatLng> myLastCoordinates = [];
-  LocationAccuracy accuracy = LocationAccuracy.high;
+  List<Marker>? markers_for_drawing;
   var curLocation = LatLng(47.2313, 39.7233);
   Marker myMarker = Marker(
       point: LatLng(47.2313, 39.7233),
@@ -121,7 +114,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   },
                 ),
                 myMarkerLayer!,
-                MarkerLayerOptions(markers: markersForDrawing ?? []),
+                MarkerLayerOptions(markers: markers_for_drawing??[]),
                 PolygonLayerOptions(polygons: setPolygons([])),
                 PolylineLayerOptions(polylines: setPolyLines([]))
               ],
@@ -208,110 +201,49 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           FamilyUser(tempRes['name'], tempRes['phone'], tempRes['image']);
       famUserList!.add(familyUser);
     }
-    _locationData = await location!.getLocation();
-    timer = createTimer(const Duration(seconds: 5), _locationData);
-    location!.onLocationChanged.listen((newLocation) {
-      timer;
-    });
 
+    location!.onLocationChanged.listen((newLocation) {
+      Timer(const Duration(seconds: 5), () async {
+        //updateMyMarker(LatLng(newLocation.latitude!, newLocation.longitude!));
+        Map<String, dynamic> data = {};
+        data['phone'] = phoneController.text;
+        data['latitude'] = newLocation.latitude!;
+        data['longitude'] = newLocation.longitude!;
+        var battery = Battery();
+        data['battery'] = await battery.batteryLevel;
+        var resultCoordinates = ((await getCoor(data)) as http.Response).body;
+        List<dynamic> usersList = jsonDecode(resultCoordinates);
+        List<CustomMarker> markers = [];
+        for (var element in usersList) {
+          Map<String, dynamic> elm = element;
+          var phoneKey = elm['Phone'];
+          //var img = Image.memory();
+          Map<String, dynamic> point = elm['point'];
+          CustomMarker customMarker = CustomMarker(
+              elm['Name'],
+              Image.asset('imgs/camera.png'),
+              LatLng(point['Latitude'], point['Longitude']),
+              point['Battery'].toString());
+          markers.add(customMarker);
+        }
+        setState(() {
+          //markers.clear();
+          markers_for_drawing = setMarkers(markers);
+        });
+        //var res = r as http.Response;
+        // print("Получено:\n");
+        // print(markers.length);
+        // print(resultCoordinates);
+        // print("Получено:\n");
+        //debugPrint(res.body);
+      });
+    });
+    _locationData = await location!.getLocation();
 
     //updateMyMarker(LatLng(_locationData.latitude!, _locationData.longitude!));
   }
 
-  void changeLocatorSettings(LocationData newLocation) {
-    double srLat = 0;
-    double srLon = 0;
-    for (var element in myLastCoordinates) {
-      srLat += element.latitude;
-      srLon += element.longitude;
-    }
-    var latChanged =
-        srLat / myLastCoordinates.length - myLastCoordinates[0].latitude >
-            0.001;
-    var lonChanged =
-        srLon / myLastCoordinates.length - myLastCoordinates[0].longitude >
-            0.001;
-    if ((lonChanged || latChanged)&&state!=States.Movement) {
-      state = States.Movement;
-      startMovement(newLocation);
-    } else if(!lonChanged&&!latChanged&&state!=States.Static){
-      state = States.Static;
-      startStatic(newLocation);
-    }
-  }
 
-
-
-  void startStatic(LocationData location) {
-    setState(() {
-      minutes = 1;
-      seconds = 0;
-      duration = Duration(seconds: seconds, minutes:  minutes);
-      accuracy = LocationAccuracy.powerSave;
-      timer!.cancel();
-      timer = createTimer(duration!, location);
-    });
-  }
-
-  void startMovement(LocationData location) {
-    setState(() {
-      minutes = 0;
-      seconds = 5;
-      duration = Duration(seconds: seconds, minutes:  minutes);
-      accuracy = LocationAccuracy.navigation;
-    });
-  }
-
-  Timer createTimer(Duration duration, LocationData newLocation)
-  {
-    return Timer.periodic(duration, (timer)async {
-      //updateMyMarker(LatLng(newLocation.latitude!, newLocation.longitude!));
-      Map<String, dynamic> data = {};
-      if (myLastCoordinates.length > 4) {
-        myLastCoordinates.removeAt(0);
-      }
-      myLastCoordinates
-          .add(LatLng(newLocation.latitude ?? 0, newLocation.longitude ?? 0));
-
-      data['phone'] = phoneController.text;
-      data['latitude'] = newLocation.latitude!;
-      data['longitude'] = newLocation.longitude!;
-      var battery = Battery();
-      data['battery'] = await battery.batteryLevel;
-      var resultCoordinates = ((await getCoor(data)) as http.Response).body;
-      List<dynamic> usersList = jsonDecode(resultCoordinates);
-      List<CustomMarker> markers = [];
-      for (var element in usersList) {
-        Map<String, dynamic> elm = element;
-        var phoneKey = elm['Phone'];
-        //var img = Image.memory();
-        Map<String, dynamic> point = elm['point'];
-        CustomMarker customMarker = CustomMarker(
-            elm['Name'],
-            Image.asset('imgs/camera.png'),
-            LatLng(point['Latitude'], point['Longitude']),
-            point['Battery'].toString());
-        markers.add(customMarker);
-      }
-      setState(() {
-        //markers.clear();
-        markersForDrawing = setMarkers(markers);
-      });
-      //var res = r as http.Response;
-      print("Получено:\n");
-      print(markers.length);
-      print(resultCoordinates);
-      print("Получено:\n");
-      changeLocatorSettings(newLocation);
-      //debugPrint(res.body);
-    });
-  }
-
-}
-
-enum States{
-  Static,
-  Movement
 }
 
 class FamilyUser {
