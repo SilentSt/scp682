@@ -1,11 +1,6 @@
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:scp682/controllers/text_controllers.dart';
-import 'package:scp682/requests/send_map_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import 'pages/pages.dart';
 
 void main() {
@@ -32,7 +27,7 @@ class _AppState extends State<App> {
     //prefs.setString('familyID', data['familyID']);
     bool? _seen;
 
-    _seen = (prefs.containsKey('phone') ?? false);
+    _seen = (prefs.containsKey('phone'));
 
     if (_seen) {
       return "home";
@@ -56,8 +51,8 @@ class _AppState extends State<App> {
             return MaterialApp(
               initialRoute: snapshot.data.toString(),
               routes: {
-                "intro": (context) => OnBoardingPage(),
-                "home": (context) => HomePage(),
+                "intro": (context) => const OnBoardingPage(),
+                "home": (context) => const HomePage(),
               },
             );
           }

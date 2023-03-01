@@ -98,14 +98,14 @@ class _CreateFamilyPageState extends State<CreateFamilyPage> {
     else if(res.statusCode==201)
       {
         var sh = await SharedPreferences.getInstance();
-        var famID = jsonDecode(res.body)['familyID'];
-        var name = jsonDecode(res.body)['name'];
-        var phone= jsonDecode(res.body)['phone'];
-        var photo= jsonDecode(res.body)['photo'];
-        var admin= jsonDecode(res.body)['admin'];
+        var famID = jsonDecode(res.body)['FamilyID'];
+        var name = jsonDecode(res.body)['Name'];
+        var phone= jsonDecode(res.body)['Phone'];
+        var photo= jsonDecode(res.body)['Photo'];
+        var admin= jsonDecode(res.body)['Admin'];
         nameController.text = name;
         phoneController.text = phone;
-        User.strImg = photo;
+        User.strImg = [];
         User.admin = admin;
         sh.setBool('admin', admin??false);
         sh.setString('phone', phone??'');

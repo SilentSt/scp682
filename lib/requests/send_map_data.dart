@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<String> sendMapData(Map<String,String> headers,String command,Map<String, dynamic> body ) async {
   //final jsonString = json.encode(toJson());
-  final uri = Uri.parse('http://217.25.89.68:25448/'+command);
+  final uri = Uri.parse('http://sbeusilent.space:6321/'+command);
   final response = await http.post(uri, headers: headers, body: body);
   //print(response.statusCode);
   //print(response.body);
@@ -21,7 +21,7 @@ Future<String> sendMapData(Map<String,String> headers,String command,Map<String,
 
 Future sendMapDataWithoutHeaders(String command,Map<String, dynamic> body ,Map<String,String> headers,) async {
   //final jsonString = json.encode(toJson());
-  final uri = Uri.parse('http://217.25.89.68:25448/'+command);
+  final uri = Uri.parse('http://sbeusilent.space:6321/'+command);
   //print(jsonEncode(body));
   //print(body);
   //print(jsonEncode(body));
@@ -35,7 +35,7 @@ Future sendMapDataWithoutHeaders(String command,Map<String, dynamic> body ,Map<S
 
 Future getCoor(Map<String, dynamic> body) async {
   //final jsonString = json.encode(toJson());
-  final uri = Uri.parse('http://217.25.89.68:25448/user/updatecoordinates');
+  final uri = Uri.parse('http://sbeusilent.space:6321/user/updatecoordinates');
   //print(jsonEncode(body));
   //print(body);
   //print(jsonEncode(body));
@@ -52,7 +52,7 @@ Future getCoor(Map<String, dynamic> body) async {
 
 Future getFamily(String phone)async{
 
-  final uri = Uri.parse("http://217.25.89.68:25448/user/family?phone="+phone);
+  final uri = Uri.parse("http://sbeusilent.space:6321/user/family?phone="+phone);
   final response = await http.get(uri);
   //debugPrint(response.body);
   return response;

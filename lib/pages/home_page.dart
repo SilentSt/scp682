@@ -1,19 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:battery/battery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart';
 import 'package:scp682/controllers/map_controllers.dart';
 import 'package:scp682/controllers/text_controllers.dart';
 import 'package:scp682/data/user.dart';
-import 'package:scp682/headers/headers.dart';
+import 'package:scp682/models/models.dart';
 import 'package:scp682/requests/send_map_data.dart';
 import 'package:scp682/widgets/widgets.dart';
-import 'package:scp682/models/models.dart';
-import 'package:location/location.dart';
-import 'package:http/http.dart' as http;
-import 'package:background_location/background_location.dart' as bg;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -36,14 +35,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Location? location;
   List<FamilyUser>? famUserList;
-  List<Marker>? markers_for_drawing;
+  List<Marker>? markersForDrawing;
   var curLocation = LatLng(47.2313, 39.7233);
-  Marker myMarker = Marker(
-      point: LatLng(47.2313, 39.7233),
-      builder: (context) => const Text("Карина"),
-      width: 50,
-      height: 50);
-  static MarkerLayerOptions? myMarkerLayer;
+  Marker myMarker =
+      Marker(point: LatLng(47.2313, 39.7233), builder: (context) => const Text("Карина"), width: 50, height: 50);
+  static MarkerLayer? myMarkerLayer;
 
   void callbackDispatcher() {
     Workmanager().executeTask((task, inputData) async {
@@ -55,17 +51,17 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    myMarkerLayer = MarkerLayerOptions(markers: [myMarker]);
+    myMarkerLayer = MarkerLayer(markers: [myMarker]);
     famUserList = [];
     getCurrentLocation();
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     // Remove the observer
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -103,10 +99,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 center: curLocation,
                 zoom: 18.0,
               ),
-              layers: [
-                TileLayerOptions(
+              children: [
+                TileLayer(
                   urlTemplate:
                       "https://api.mapbox.com/styles/v1/whiskas44/ckwj7lmmx5hb515p7qs85e9xj/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoid2hpc2thczQ0IiwiYSI6ImNrd2o3NDh6cjB6d2cydG1kOHo4ajR0aGUifQ.QkzWmwXq4DWNCBX32pwPQg",
+                  // ignore: prefer_const_literals_to_create_immutables
                   additionalOptions: {
                     "accessToken":
                         "pk.eyJ1Ijoid2hpc2thczQ0IiwiYSI6ImNrd2o3NDh6cjB6d2cydG1kOHo4ajR0aGUifQ.QkzWmwXq4DWNCBX32pwPQg",
@@ -114,9 +111,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   },
                 ),
                 myMarkerLayer!,
-                MarkerLayerOptions(markers: markers_for_drawing??[]),
-                PolygonLayerOptions(polygons: setPolygons([])),
-                PolylineLayerOptions(polylines: setPolyLines([]))
+                MarkerLayer(markers: markersForDrawing ?? []),
+                PolygonLayer(polygons: setPolygons([])),
+                PolylineLayer(polylines: setPolyLines([]))
               ],
             ),
             Align(
@@ -151,8 +148,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   List<Polygon> setPolygons(List<CustomPolygon> polygons) {
     List<Polygon> tempPolygons = [];
     for (var polygon in polygons) {
-      Polygon tempPolygon =
-          Polygon(points: polygon.points, color: polygon.color);
+      Polygon tempPolygon = Polygon(points: polygon.points, color: polygon.color);
       tempPolygons.add(tempPolygon);
     }
     return tempPolygons;
@@ -161,8 +157,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   List<Polyline> setPolyLines(List<CustomPolyLine> polyLines) {
     List<Polyline> tempPolyLines = [];
     for (var polyLine in polyLines) {
-      Polyline tempPolyline =
-          Polyline(points: polyLine.points, color: polyLine.color);
+      Polyline tempPolyline = Polyline(points: polyLine.points, color: polyLine.color);
       tempPolyLines.add(tempPolyline);
     }
     return tempPolyLines;
@@ -197,8 +192,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     List<dynamic> resList = jsonDecode(res.body);
     for (var res in resList) {
       Map<String, dynamic> tempRes = res!;
-      FamilyUser familyUser =
-          FamilyUser(tempRes['name'], tempRes['phone'], tempRes['image']);
+      FamilyUser familyUser = FamilyUser(tempRes['name'], tempRes['phone'], tempRes['image']);
       famUserList!.add(familyUser);
     }
 
@@ -219,16 +213,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           var phoneKey = elm['Phone'];
           //var img = Image.memory();
           Map<String, dynamic> point = elm['point'];
-          CustomMarker customMarker = CustomMarker(
-              elm['Name'],
-              Image.asset('imgs/camera.png'),
-              LatLng(point['Latitude'], point['Longitude']),
-              point['Battery'].toString());
+          CustomMarker customMarker = CustomMarker(elm['Name'], Image.asset('imgs/camera.png'),
+              LatLng(point['Latitude'], point['Longitude']), point['Battery'].toString());
           markers.add(customMarker);
         }
         setState(() {
           //markers.clear();
-          markers_for_drawing = setMarkers(markers);
+          markersForDrawing = setMarkers(markers);
         });
         //var res = r as http.Response;
         // print("Получено:\n");
@@ -242,8 +233,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     //updateMyMarker(LatLng(_locationData.latitude!, _locationData.longitude!));
   }
-
-
 }
 
 class FamilyUser {

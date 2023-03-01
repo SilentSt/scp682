@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -20,20 +19,20 @@ class _RegistrationGetPermissionsPageState
 
   Color buttonColor = lightGrey;
   Function buttonFunction = showErrorMessage;
-  AdvancedSwitchController geoController = AdvancedSwitchController();
-  AdvancedSwitchController pushController = AdvancedSwitchController();
+  AdvancedSwitch geoController = AdvancedSwitch();
+  AdvancedSwitch pushController = AdvancedSwitch();
   @override
   void initState() {
-    geoController.addListener(() {
-      setState(() {
-        geoController.value&&pushController.value?enableButton():disableButton();
-      });
-    });
-    pushController.addListener(() {
-      setState(() {
-        geoController.value&&pushController.value?enableButton():disableButton();
-      });
-    });
+    // geoController.addListener(() {
+    //   setState(() {
+    //     geoController.value&&pushController.value?enableButton():disableButton();
+    //   });
+    // });
+    // pushController. addListener(() {
+    //   setState(() {
+    //     geoController.value&&pushController.value?enableButton():disableButton();
+    //   });
+    // });
     super.initState();
   }
   @override

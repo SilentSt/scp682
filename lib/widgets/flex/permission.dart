@@ -14,7 +14,7 @@ class Permisson extends StatelessWidget {
   final String label;
   final String description;
   final PermissionWithService permisson;
-  final AdvancedSwitchController controller;
+  final AdvancedSwitch controller;
 
   @override
   Widget build(BuildContext context) {
@@ -42,15 +42,15 @@ class Permisson extends StatelessWidget {
             )
           ],
         ),
-        ChangeNotifierProvider(
-            create: (_) => SwitchProvider(),
-            child: Consumer<SwitchProvider>(
-              builder: (context, checkboxProvider, _) => AdvancedSwitch(
-                controller: controller,
-                activeColor: blue,
+        // ChangeNotifierProvider(
+        //     create: (_) => SwitchProvider(),
+        //     child: Consumer<SwitchProvider>(
+        //       builder: (context, checkboxProvider, _) => AdvancedSwitch(
+        //         controller: controller,
+        //         activeColor: blue,
 
-              ),
-            )),
+        //       ),
+        //     )),
       ],
     );
   }
